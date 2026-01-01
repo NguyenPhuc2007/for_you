@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You 💖</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    height:100vh;
+    overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background: radial-gradient(circle at bottom,#020024,#090979,#000);
+    perspective:1200px;
+    color:white;
+}
+
+/* ===== 3D SCENE ===== */
+.scene{
+    position:absolute;
+    inset:0;
+    transform-style:preserve-3d;
+    transition:transform 0.15s ease;
+}
+
+/* ===== SCREEN ===== */
+.screen{
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:16px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.8s ease;
+}
+.screen.active{
+    opacity:1;
+    pointer-events:auto;
+}
+
+/* ===== CARD (MOBILE FIRST) ===== */
+.card{
+    width:100%;
+    max-width:420px;
+    background:rgba(255,255,255,0.15);
+    backdrop-filter: blur(16px);
+    padding:28px 22px;
+    border-radius:22px;
+    transform:translateZ(140px);
+    box-shadow:0 25px 60px rgba(0,0,0,0.45);
+    animation: float 4s ease-in-out infinite;
+}
+
+h2{
+    font-size:22px;
+    margin-bottom:18px;
+    line-height:1.35;
+}
+
+p{
+    font-size:15.5px;
+    line-height:1.7;
+    text-align:left;
+}
+
+/* ===== BUTTONS ===== */
+.buttons{
+    margin-top:22px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+}
+
+button{
+    flex:1;
+    min-width:120px;
+    padding:14px 0;
+    border:none;
+    border-radius:999px;
+    font-size:15px;
+    cursor:pointer;
+    background:linear-gradient(135deg,#ff5fa2,#ff9ecf);
+    color:white;
+    transition:0.3s;
+}
+button:active{
+    transform:scale(0.95);
+}
+
+/* ===== FLOAT ===== */
+@keyframes float{
+    0%,100%{transform:translateZ(140px) translateY(0)}
+    50%{transform:translateZ(160px) translateY(-10px)}
+}
+
+/* ===== HEART ===== */
+.heart{
+    position:absolute;
+    animation: fly 8s linear forwards;
+}
+@keyframes fly{
+    from{
+        transform:translate3d(var(--x),110vh,var(--z)) scale(0.6);
+        opacity:1;
+    }
+    to{
+        transform:translate3d(var(--x),-10vh,var(--z)) scale(1.4);
+        opacity:0;
+    }
+}
+
+/* ===== FLOWER ===== */
+.flower{
+    position:absolute;
+    animation: fall 10s linear forwards;
+}
+@keyframes fall{
+    from{
+        transform:translate3d(var(--x),-10vh,var(--z)) rotate(0deg);
+        opacity:1;
+    }
+    to{
+        transform:translate3d(var(--x),110vh,var(--z)) rotate(360deg);
+        opacity:0;
+    }
+}
+
+canvas{position:absolute;inset:0}
+</style>
+</head>
+
+<body>
+
+<audio id="bgm" loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7b2c6c6b28.mp3">
+</audio>
+
+<div class="scene" id="scene">
+<canvas id="fireworks"></canvas>
+
+<!-- SCREEN 1 -->
+<div class="screen active" id="s1">
+<div class="card">
+<h2 id="q1">Em thấy mình đã sẵn sàng cho một mối quan hệ chưa?</h2>
+<div class="buttons">
+<button onclick="toTH1()">Có 💗</button>
+<button onclick="toTH2()">Chưa chắc 🤔</button>
+</div>
+</div>
+</div>
+
+<!-- TH2 -->
+<div class="screen" id="s2">
+<div class="card">
+<h2>😼 Ai cho ấn vào đây</h2>
+<p>Không được né đâu nhé.</p>
+<div class="buttons">
+<button onclick="toTH1()">Có 😌</button>
+<button onclick="toTH2()">Chưa chắc 🙃</button>
+</div>
+</div>
+</div>
+
+<!-- TH1 -->
+<div class="screen" id="s3">
+<div class="card">
+<p id="msg1"></p>
+<div class="buttons">
+<button onclick="toFinal()">Ừ 💞</button>
+<button onclick="toFinal()">Chắc chắn luôn 😳</button>
+</div>
+</div>
+</div>
+
+<!-- FINAL -->
+<div class="screen" id="s4">
+<div class="card">
+<h2>🎆 Chúc Mừng Năm Mới 2026 🎆</h2>
+<p id="wish"></p>
+</div>
+</div>
+
+</div>
+
+<script>
+/* ===== NAME ===== */
+let name = prompt("Tên em là gì nhỉ? 💖") || "em";
+document.getElementById("q1").innerText =
+`${name} thấy mình đã sẵn sàng cho một mối quan hệ chưa?`;
+
+/* ===== REALISTIC TEXT ===== */
+document.getElementById("msg1").innerHTML =
+`Anh thấy việc em suy nghĩ nghiêm túc như vậy là rất đáng trân trọng.<br><br>
+Năm nay là năm cuối cấp, mọi thứ đều quan trọng và cũng không hề dễ dàng.
+Anh không mong điều gì quá lớn, chỉ là nếu có thể,
+hai mình cùng học bài, cùng nhắc nhau cố gắng,
+để em không phải tự gồng một mình.<br><br>
+Anh nghĩ sự quan tâm đúng lúc và vừa đủ
+sẽ giúp cả hai hiểu nhau hơn,
+chứ không làm mọi thứ trở nên nặng nề.`;
+
+document.getElementById("wish").innerHTML =
+`${name} à,<br><br>
+Bước sang năm 2026, anh mong em sẽ luôn giữ được sự bình tĩnh
+trước những kỳ thi và những quyết định quan trọng phía trước.<br><br>
+Mong rằng những nỗ lực âm thầm của em sẽ được đền đáp,
+và em sẽ đỗ <b>Nguyện vọng 1</b> theo cách mà em xứng đáng nhất.<br><br>
+Dù kết quả thế nào, hãy nhớ rằng:
+em đã rất cố gắng, và điều đó luôn có giá trị 💖`;
+
+const bgm=document.getElementById("bgm");
+document.body.addEventListener("click",()=>bgm.play(),{once:true});
+
+/* ===== NAV ===== */
+function show(id){
+document.querySelectorAll('.screen')
+.forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+function toTH1(){show('s3')}
+function toTH2(){show('s2')}
+function toFinal(){show('s4')}
+
+/* ===== PARALLAX (MOBILE SAFE) ===== */
+document.addEventListener("mousemove",e=>{
+const x=(e.clientX/window.innerWidth-0.5)*10;
+const y=(e.clientY/window.innerHeight-0.5)*10;
+scene.style.transform=`rotateY(${x}deg) rotateX(${-y}deg)`;
+});
+
+/* ===== HEARTS ===== */
+setInterval(()=>{
+const h=document.createElement("div");
+h.className="heart";
+h.innerHTML="💖";
+h.style.setProperty("--x",Math.random()*100+"vw");
+h.style.setProperty("--z",(Math.random()*300-150)+"px");
+h.style.fontSize=(16+Math.random()*24)+"px";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),8000);
+},450);
+
+/* ===== FLOWERS ===== */
+setInterval(()=>{
+const f=document.createElement("div");
+f.className="flower";
+f.innerHTML=Math.random()>0.5?"🌸":"🌼";
+f.style.setProperty("--x",Math.random()*100+"vw");
+f.style.setProperty("--z",(Math.random()*300-150)+"px");
+f.style.fontSize=(16+Math.random()*20)+"px";
+document.body.appendChild(f);
+setTimeout(()=>f.remove(),10000);
+},700);
+
+/* ===== FIREWORKS ===== */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;canvas.height=innerHeight;
+window.onresize=()=>{canvas.width=innerWidth;canvas.height=innerHeight};
+
+class Firework{
+constructor(){
+this.x=Math.random()*canvas.width;
+this.y=canvas.height;
+this.ty=Math.random()*canvas.height/2;
+this.color=`hsl(${Math.random()*360},100%,60%)`;
+this.exploded=false;this.p=[];
+}
+explode(){
+for(let i=0;i<60;i++){
+this.p.push({
+x:this.x,y:this.y,
+vx:(Math.random()-0.5)*7,
+vy:(Math.random()-0.5)*7,
+life:90
+});
+}
+}
+update(){
+if(!this.exploded){
+this.y-=7;
+if(this.y<=this.ty){this.exploded=true;this.explode();}
+}else{
+this.p.forEach(e=>{e.x+=e.vx;e.y+=e.vy;e.life--});
+}
+}
+draw(){
+if(!this.exploded){
+ctx.fillStyle=this.color;
+ctx.fillRect(this.x,this.y,2,2);
+}else{
+this.p.forEach(e=>{
+ctx.fillStyle=this.color;
+ctx.fillRect(e.x,e.y,2,2);
+});
+}
+}
+}
+const fws=[];
+(function animate(){
+ctx.fillStyle="rgba(0,0,0,0.25)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+if(Math.random()<0.05)fws.push(new Firework());
+fws.forEach((f,i)=>{
+f.update();f.draw();
+if(f.exploded&&f.p.every(p=>p.life<=0))fws.splice(i,1);
+});
+requestAnimationFrame(animate);
+})();
+</script>
+
+</body>
+</html>
